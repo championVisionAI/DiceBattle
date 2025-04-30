@@ -5,7 +5,12 @@ import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 
 // Creating a simple dice mesh since we don't have a provided model
-const DiceModel = forwardRef(({ position = [0, 0, 0] }, ref) => {
+// Define TypeScript interface for component props
+interface DiceProps {
+  position?: [number, number, number];
+}
+
+const DiceModel = forwardRef<THREE.Group, DiceProps>(({ position = [0, 0, 0] }, ref) => {
   // Use a wood texture for the dice
   const texture = useTexture("/textures/wood.jpg");
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -111,32 +116,56 @@ const DiceModel = forwardRef(({ position = [0, 0, 0] }, ref) => {
         
         {/* Face 1 (opposite to face 6) */}
         <group rotation={[0, 0, 0]}>
-          {pipPositions[1].map((pos, i) => createPip(pos[0], pos[1], pos[2]))}
+          {pipPositions[1].map((pos, i) => (
+            <React.Fragment key={`face1-pip-${i}`}>
+              {createPip(pos[0], pos[1], pos[2])}
+            </React.Fragment>
+          ))}
         </group>
         
         {/* Face 2 (opposite to face 5) */}
         <group rotation={[0, Math.PI/2, 0]}>
-          {pipPositions[2].map((pos, i) => createPip(pos[0], pos[1], pos[2]))}
+          {pipPositions[2].map((pos, i) => (
+            <React.Fragment key={`face2-pip-${i}`}>
+              {createPip(pos[0], pos[1], pos[2])}
+            </React.Fragment>
+          ))}
         </group>
         
         {/* Face 3 (opposite to face 4) */}
         <group rotation={[Math.PI, 0, 0]}>
-          {pipPositions[3].map((pos, i) => createPip(pos[0], pos[1], pos[2]))}
+          {pipPositions[3].map((pos, i) => (
+            <React.Fragment key={`face3-pip-${i}`}>
+              {createPip(pos[0], pos[1], pos[2])}
+            </React.Fragment>
+          ))}
         </group>
         
         {/* Face 4 */}
         <group rotation={[0, -Math.PI/2, 0]}>
-          {pipPositions[4].map((pos, i) => createPip(pos[0], pos[1], pos[2]))}
+          {pipPositions[4].map((pos, i) => (
+            <React.Fragment key={`face4-pip-${i}`}>
+              {createPip(pos[0], pos[1], pos[2])}
+            </React.Fragment>
+          ))}
         </group>
         
         {/* Face 5 */}
         <group rotation={[Math.PI/2, 0, 0]}>
-          {pipPositions[5].map((pos, i) => createPip(pos[0], pos[1], pos[2]))}
+          {pipPositions[5].map((pos, i) => (
+            <React.Fragment key={`face5-pip-${i}`}>
+              {createPip(pos[0], pos[1], pos[2])}
+            </React.Fragment>
+          ))}
         </group>
         
         {/* Face 6 */}
         <group rotation={[-Math.PI/2, 0, 0]}>
-          {pipPositions[6].map((pos, i) => createPip(pos[0], pos[1], pos[2]))}
+          {pipPositions[6].map((pos, i) => (
+            <React.Fragment key={`face6-pip-${i}`}>
+              {createPip(pos[0], pos[1], pos[2])}
+            </React.Fragment>
+          ))}
         </group>
       </group>
     </group>

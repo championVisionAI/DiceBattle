@@ -117,11 +117,26 @@ function App() {
 
   return (
     <div className="game-container">
-      {/* 3D Canvas */}
+      {/* 3D Canvas with full-screen rendering and improved graphics */}
       <Canvas
         shadows
-        camera={{ position: [0, 5, 10], fov: 50, near: 0.1, far: 100 }}
-        gl={{ antialias: true, alpha: false }}
+        dpr={[1, 2]} // Responsive pixel ratio for better mobile display
+        camera={{ position: [0, 4, 8], fov: 45, near: 0.1, far: 100 }}
+        gl={{ 
+          antialias: true, 
+          alpha: false, 
+          powerPreference: "high-performance",
+          stencil: false,
+          depth: true
+        }}
+        style={{ 
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          touchAction: "none"
+        }}
       >
         <color attach="background" args={["#222222"]} />
         <Suspense fallback={null}>
