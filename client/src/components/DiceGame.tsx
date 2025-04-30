@@ -32,37 +32,50 @@ const Floor = () => {
 // Walls to keep dice from falling off
 const Walls = () => {
   const wallThickness = 0.5;
-  const wallHeight = 2;
-  const arenaSize = 10;
+  const wallHeight = 4; // Higher walls to prevent dice from jumping out
+  const arenaSize = 8; // Smaller arena to keep dice more contained
   
   const [floor] = usePlane(() => ({ 
     rotation: [-Math.PI / 2, 0, 0], 
     position: [0, -0.5, 0],
-    type: "static" 
+    type: "Static",
+    material: { friction: 0.3, restitution: 0.1 } // Less bouncy floor
   }));
   
   const [wallLeft] = usePlane(() => ({ 
     rotation: [0, Math.PI / 2, 0], 
     position: [-arenaSize/2, wallHeight/2, 0],
-    type: "static" 
+    type: "Static",
+    material: { friction: 0.3, restitution: 0.4 }
   }));
   
   const [wallRight] = usePlane(() => ({ 
     rotation: [0, -Math.PI / 2, 0], 
     position: [arenaSize/2, wallHeight/2, 0],
-    type: "static" 
+    type: "Static",
+    material: { friction: 0.3, restitution: 0.4 }
   }));
   
   const [wallBack] = usePlane(() => ({ 
     rotation: [0, 0, 0], 
     position: [0, wallHeight/2, -arenaSize/2],
-    type: "static" 
+    type: "Static",
+    material: { friction: 0.3, restitution: 0.4 }
   }));
   
   const [wallFront] = usePlane(() => ({ 
     rotation: [0, Math.PI, 0], 
     position: [0, wallHeight/2, arenaSize/2],
-    type: "static" 
+    type: "Static",
+    material: { friction: 0.3, restitution: 0.4 }
+  }));
+  
+  // Add a ceiling to prevent extreme bounces
+  const [ceiling] = usePlane(() => ({ 
+    rotation: [Math.PI / 2, 0, 0], 
+    position: [0, wallHeight, 0],
+    type: "Static",
+    material: { friction: 0.3, restitution: 0.1 }
   }));
   
   return (
@@ -89,6 +102,11 @@ const Walls = () => {
       
       <mesh ref={wallFront} receiveShadow visible={false}>
         <planeGeometry args={[arenaSize, wallHeight]} />
+        <meshStandardMaterial opacity={0} transparent />
+      </mesh>
+      
+      <mesh ref={ceiling} receiveShadow visible={false}>
+        <planeGeometry args={[arenaSize, arenaSize]} />
         <meshStandardMaterial opacity={0} transparent />
       </mesh>
     </>
