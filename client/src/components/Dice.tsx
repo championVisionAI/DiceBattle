@@ -13,18 +13,18 @@ const DiceModel = forwardRef(({ position = [0, 0, 0] }, ref) => {
   
   // Physics box for the dice
   const [physicsRef, api] = useBox(() => ({
-    mass: 2, // Increased mass for better stability
+    mass: 1.5, // Slightly reduced mass for more predictable movement
     position: position,
     rotation: [Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI],
     args: [1, 1, 1], // Size of the dice
     allowSleep: true,
-    sleepSpeedLimit: 0.05, // Lower speed limit for sleep detection
-    sleepTimeLimit: 0.5, // Shorter time limit for stopping
-    linearDamping: 0.7, // Add damping to reduce wild movement
-    angularDamping: 0.7, // Add angular damping
+    sleepSpeedLimit: 0.03, // Even lower speed limit for faster sleep detection
+    sleepTimeLimit: 0.3, // Shorter time limit for stopping
+    linearDamping: 0.8, // More damping to reduce wild movement
+    angularDamping: 0.8, // More angular damping
     material: { 
-      friction: 0.5, // More friction
-      restitution: 0.2 // Less bounce
+      friction: 0.6, // More friction for better stability
+      restitution: 0.15 // Less bounce for more predictable movement
     }
   }));
   

@@ -43,9 +43,14 @@ const ScoreDisplay = ({ score }: ScoreDisplayProps) => {
         exit={{ opacity: 0, y: -20 }}
       >
         <div className={`result-card ${score.result}`}>
-          <h2 className="result-title">
-            {score.result === "win" ? "You Won!" : "You Lost"}
-          </h2>
+          <motion.h2 
+            className="result-title"
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", bounce: 0.5 }}
+          >
+            {score.result === "win" ? "🎉 You Won! 🎉" : "You Lost"}
+          </motion.h2>
           
           <div className="dice-values">
             <div className="dice-row">
@@ -53,17 +58,27 @@ const ScoreDisplay = ({ score }: ScoreDisplayProps) => {
                 <motion.div 
                   key={index} 
                   className="dice-value"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: index * 0.2, type: "spring" }}
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ 
+                    delay: index * 0.2, 
+                    type: "spring", 
+                    stiffness: 200,
+                    damping: 15 
+                  }}
                 >
                   {value}
                 </motion.div>
               ))}
             </div>
-            <div className="dice-total">
-              Total: {score.totalValue}
-            </div>
+            <motion.div 
+              className="dice-total"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              Total: <strong>{score.totalValue}</strong>
+            </motion.div>
           </div>
           
           {score.result === "win" ? (
@@ -89,8 +104,9 @@ const ScoreDisplay = ({ score }: ScoreDisplayProps) => {
           
           {showContinue && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
               className="continue-container"
             >
               <Button 
@@ -100,9 +116,14 @@ const ScoreDisplay = ({ score }: ScoreDisplayProps) => {
               >
                 Place New Bet
               </Button>
-              <p className="shake-hint">
+              <motion.p 
+                className="shake-hint"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+              >
                 Shake your device to roll the dice!
-              </p>
+              </motion.p>
             </motion.div>
           )}
         </div>
