@@ -6,7 +6,7 @@ interface Acceleration {
   z: number;
 }
 
-const useDeviceMotion = (threshold = 10, cooldownPeriod = 500) => {
+const useDeviceMotion = (threshold = 8, cooldownPeriod = 300) => {
   const [acceleration, setAcceleration] = useState<Acceleration>({ x: 0, y: 0, z: 0 });
   const [isShaking, setIsShaking] = useState(false);
   const [lastShake, setLastShake] = useState(0);

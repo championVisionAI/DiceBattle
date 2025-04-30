@@ -14,7 +14,11 @@ const Floor = () => {
   const [ref] = usePlane(() => ({ 
     rotation: [-Math.PI / 2, 0, 0], 
     position: [0, -0.5, 0],
-    type: "static"
+    type: "Static",
+    material: { 
+      friction: 0.5,
+      restitution: 0.1
+    }
   }));
 
   return (
@@ -129,14 +133,16 @@ const DiceGame = () => {
   // Handle device motion to apply forces to dice
   useEffect(() => {
     if (gamePhase === "rolling" && isShaking) {
-      // Apply force to dice based on device acceleration
+      // Apply force to dice based on device acceleration - more controlled forces
       diceRefs.current.forEach(dice => {
-        applyForceToDice(
-          dice, 
-          acceleration.x * 0.5,
-          Math.abs(acceleration.y) * 0.3,
-          acceleration.z * 0.5
-        );
+        // Apply a more controlled force to prevent wild movement
+        // Use clamping to limit maximum force
+        const clampForce = (val: number, max: number) => Math.max(-max, Math.min(max, val));
+        const forceX = clampForce(acceleration.x * 0.3, 2);
+        const forceY = clampForce(Math.abs(acceleration.y) * 0.2, 1.5);
+        const forceZ = clampForce(acceleration.z * 0.3, 2);
+        
+        applyForceToDice(dice, forceX, forceY, forceZ);
       });
       
       // Play hit sound when force is applied
@@ -198,11 +204,13 @@ const DiceGame = () => {
     }
   }, [isShaking, gamePhase, betAmount, setPhase, resetShake]);
   
-  // Set camera position
+  // Set camera position - closer to dice for better view
   useEffect(() => {
     if (camera instanceof THREE.PerspectiveCamera) {
-      camera.position.set(0, 5, 10);
+      camera.position.set(0, 4, 8);
       camera.lookAt(0, 0, 0);
+      camera.fov = 45; // Narrower field of view for better focus
+      camera.updateProjectionMatrix();
     }
   }, [camera]);
   
@@ -222,8 +230,8 @@ const DiceGame = () => {
         castShadow={false} 
       />
       
-      {/* Camera */}
-      <PerspectiveCamera makeDefault position={[0, 5, 10]} />
+      {/* Camera - Updated initial position to match the useEffect settings */}
+      <PerspectiveCamera makeDefault position={[0, 4, 8]} fov={45} />
       
       {/* Environment and physics */}
       <Environment preset="city" />

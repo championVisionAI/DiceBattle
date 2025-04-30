@@ -27,13 +27,14 @@ const useDicePhysics = () => {
         const linearVel = new THREE.Vector3();
         const angularVel = new THREE.Vector3();
         
-        dice.userData.api.velocity.copy(linearVel);
-        dice.userData.api.angularVelocity.copy(angularVel);
+        // Copy velocities to our vectors (this is opposite direction from our current code)
+        linearVel.copy(dice.userData.api.velocity);
+        angularVel.copy(dice.userData.api.angularVelocity);
         
-        // Check if the dice is still moving significantly
+        // Check if the dice is still moving significantly - using lower threshold for better detection
         const isMoving = 
-          linearVel.length() > 0.1 || 
-          angularVel.length() > 0.1;
+          linearVel.length() > 0.05 || 
+          angularVel.length() > 0.05;
         
         if (isMoving) {
           allStopped = false;
@@ -68,13 +69,14 @@ const useDicePhysics = () => {
         const upVector = new THREE.Vector3(0, 1, 0);
         
         // Transform up vector by inverse of dice rotation to get local up direction
-        const localUp = upVector.clone().applyQuaternion(rotation.invert());
+        const inversedRotation = rotation.clone().invert();
+        const localUp = upVector.clone().applyQuaternion(inversedRotation);
         
         // Find the face most aligned with the up vector
         let maxDot = -Infinity;
         let faceValue = 1;
         
-        faces.forEach((faceNormal, index) => {
+        faces.forEach((faceNormal: THREE.Vector3, index: number) => {
           const dot = faceNormal.dot(localUp);
           if (dot > maxDot) {
             maxDot = dot;
@@ -85,6 +87,9 @@ const useDicePhysics = () => {
         // The opposite face is the one facing up (dice convention)
         // 1 is opposite to 6, 2 to 5, 3 to 4
         const oppositeValue = 7 - faceValue;
+        
+        // Add extra logging to debug dice values
+        console.log(`Dice ${diceArr.indexOf(dice)}: Face up = ${faceValue}, Value = ${oppositeValue}, Dot product = ${maxDot.toFixed(2)}`);
         
         diceValues.push(oppositeValue);
       }
